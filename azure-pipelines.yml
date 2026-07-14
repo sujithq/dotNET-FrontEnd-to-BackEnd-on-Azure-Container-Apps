@@ -20,9 +20,9 @@ pr:
       - main
 
 variables:
-  azureServiceConnection: 'REPLACE_WITH_SERVICE_CONNECTION_NAME'
-  acrName: 'REPLACE_WITH_ACR_NAME'
-  resourceGroupName: 'REPLACE_WITH_RESOURCE_GROUP_NAME'
+  azureServiceConnection: 'ms-bb'
+  acrName: 'criwrcpbpr3qq3q'
+  resourceGroupName: 'rg-bb'
   tag: '$(Build.BuildId)'
   buildConfiguration: 'Release'
   vmImage: 'ubuntu-latest'
