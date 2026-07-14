@@ -34,3 +34,5 @@ app.MapGet("/inventory/{productId}", (string productId, IMemoryCache memoryCache
 .WithName("GetInventoryCount");
 
 app.Run();
+
+public partial class Program { }
