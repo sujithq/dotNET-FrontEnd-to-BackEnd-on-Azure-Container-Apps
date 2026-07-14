@@ -1,0 +1,144 @@
+# Azure DevOps pipeline: build, test, push images to ACR, deploy to Azure Container Apps.
+#
+# Before the first run, set these in the pipeline (or replace the placeholder values below):
+#   - azureServiceConnection : name of an Azure Resource Manager service connection
+#                              with access to the resource group and ACR
+#   - acrName                : Azure Container Registry name (no domain, e.g. crabc123)
+#   - resourceGroupName      : resource group that contains the Container Apps
+#
+# Container Apps are resolved at deploy time via their azd-service-name tag
+# (store / inventory / products), so generated resource names keep working.
+
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+variables:
+  azureServiceConnection: 'REPLACE_WITH_SERVICE_CONNECTION_NAME'
+  acrName: 'REPLACE_WITH_ACR_NAME'
+  resourceGroupName: 'REPLACE_WITH_RESOURCE_GROUP_NAME'
+  tag: '$(Build.BuildId)'
+  buildConfiguration: 'Release'
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: Build
+    displayName: Build and test
+    jobs:
+      - job: BuildTest
+        displayName: dotnet build + test
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - task: UseDotNet@2
+            displayName: Install .NET SDK (global.json)
+            inputs:
+              useGlobalJson: true
+
+          - script: dotnet restore src/Store.sln
+            displayName: dotnet restore
+
+          - script: dotnet build src/Store.sln --configuration $(buildConfiguration) --no-restore
+            displayName: dotnet build
+
+          - script: dotnet test src/Store.sln --configuration $(buildConfiguration) --no-build --logger trx --results-directory $(Agent.TempDirectory)/TestResults
+            displayName: dotnet test
+
+          - task: PublishTestResults@2
+            displayName: Publish test results
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFormat: VSTest
+              testResultsFiles: '$(Agent.TempDirectory)/TestResults/**/*.trx'
+              mergeTestResults: true
+              failTaskOnFailedTests: true
+              testRunTitle: Store.sln
+
+  - stage: PublishImages
+    displayName: Build and push images to ACR
+    dependsOn: Build
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    jobs:
+      - job: DockerBuildPush
+        displayName: docker build + push
+        pool:
+          vmImage: $(vmImage)
+        strategy:
+          matrix:
+            store:
+              serviceName: 'store'
+              dockerfile: 'src/Store/Dockerfile'
+            inventory:
+              serviceName: 'inventory'
+              dockerfile: 'src/Store.InventoryApi/Dockerfile'
+            products:
+              serviceName: 'products'
+              dockerfile: 'src/Store.ProductApi/Dockerfile'
+        steps:
+          - task: AzureCLI@2
+            displayName: Build and push $(serviceName)
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -euo pipefail
+                az acr login --name $(acrName)
+                image="$(acrName).azurecr.io/$(serviceName)"
+                docker build -f "$(dockerfile)" -t "$image:$(tag)" -t "$image:latest" src
+                docker push "$image:$(tag)"
+                docker push "$image:latest"
+
+  - stage: Deploy
+    displayName: Deploy to Azure Container Apps
+    dependsOn: PublishImages
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    jobs:
+      - job: DeployApps
+        displayName: az containerapp update
+        pool:
+          vmImage: $(vmImage)
+        strategy:
+          matrix:
+            store:
+              serviceName: 'store'
+            inventory:
+              serviceName: 'inventory'
+            products:
+              serviceName: 'products'
+        steps:
+          - task: AzureCLI@2
+            displayName: Deploy $(serviceName)
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -euo pipefail
+                az extension add --name containerapp --upgrade --only-show-errors
+
+                appName=$(az containerapp list \
+                  --resource-group "$(resourceGroupName)" \
+                  --query "[?tags.\"azd-service-name\"=='$(serviceName)'].name | [0]" \
+                  --output tsv)
+
+                if [ -z "$appName" ]; then
+                  echo "##vso[task.logissue type=error]No container app tagged azd-service-name=$(serviceName) found in $(resourceGroupName)."
+                  exit 1
+                fi
+
+                echo "Updating $appName to image $(acrName).azurecr.io/$(serviceName):$(tag)"
+                az containerapp update \
+                  --name "$appName" \
+                  --resource-group "$(resourceGroupName)" \
+                  --image "$(acrName).azurecr.io/$(serviceName):$(tag)" \
+                  --output none
+
+                fqdn=$(az containerapp show --name "$appName" --resource-group "$(resourceGroupName)" --query properties.configuration.ingress.fqdn --output tsv)
+                echo "Deployed $(serviceName): https://$fqdn"
