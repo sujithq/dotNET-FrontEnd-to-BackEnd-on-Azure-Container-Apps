@@ -32,3 +32,5 @@ public class Product
     public Guid ProductId => Guid.NewGuid();
     public string ProductName { get; set; } = string.Empty;
 }
+
+public partial class Program { }
