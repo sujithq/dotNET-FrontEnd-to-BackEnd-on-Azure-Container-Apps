@@ -1,0 +1,110 @@
+# Azure DevOps pipeline: provision Azure resources (subscription-scope Bicep deployment).
+#
+# Deploys infra/main.bicep, which creates the resource group (named after the
+# environment) plus Container Apps environment, ACR, monitoring, identities and
+# the three container apps.
+#
+# Before the first run, set these in the pipeline (or replace the placeholder values below):
+#   - azureServiceConnection : Azure Resource Manager service connection with
+#                              subscription-level deployment rights
+#   - environmentName        : azd environment name (also used as the resource group name)
+#   - location               : Azure region (e.g. westeurope)
+#
+# PRs touching infra/ run validate + what-if only; pushes to main deploy.
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+#      - infra/**
+      - azure-pipelines-infra.yml
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+#      - infra/**
+      - azure-pipelines-infra.yml
+
+variables:
+  azureServiceConnection: 'ms-bb'
+  environmentName: 'ms-bb'
+  location: 'francecentral'
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: Validate
+    displayName: Validate infrastructure
+    jobs:
+      - job: WhatIf
+        displayName: Bicep validate + what-if
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - task: AzureCLI@2
+            displayName: az deployment sub validate + what-if
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -euo pipefail
+
+                # Preserve current app images on re-provision: only tell the template an
+                # app exists when it actually does (matches azd's *AppExists behavior).
+                declare -A exists
+                for svc in store inventory products; do
+                  name=$(az containerapp list --resource-group "$(environmentName)" \
+                    --query "[?tags.\"azd-service-name\"=='$svc'].name | [0]" --output tsv 2>/dev/null || true)
+                  if [ -n "$name" ]; then exists[$svc]=true; else exists[$svc]=false; fi
+                done
+
+                az deployment sub validate \
+                  --location "$(location)" \
+                  --template-file infra/main.bicep \
+                  --parameters environmentName="$(environmentName)" location="$(location)" \
+                    storeAppExists=${exists[store]} inventoryAppExists=${exists[inventory]} productsAppExists=${exists[products]}
+
+                az deployment sub what-if \
+                  --location "$(location)" \
+                  --template-file infra/main.bicep \
+                  --parameters environmentName="$(environmentName)" location="$(location)" \
+                    storeAppExists=${exists[store]} inventoryAppExists=${exists[inventory]} productsAppExists=${exists[products]}
+
+  - stage: Deploy
+    displayName: Deploy infrastructure
+    dependsOn: Validate
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    jobs:
+      - job: Provision
+        displayName: az deployment sub create
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - task: AzureCLI@2
+            displayName: Deploy infra/main.bicep
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -euo pipefail
+
+                declare -A exists
+                for svc in store inventory products; do
+                  name=$(az containerapp list --resource-group "$(environmentName)" \
+                    --query "[?tags.\"azd-service-name\"=='$svc'].name | [0]" --output tsv 2>/dev/null || true)
+                  if [ -n "$name" ]; then exists[$svc]=true; else exists[$svc]=false; fi
+                done
+
+                az deployment sub create \
+                  --name "infra-$(Build.BuildId)" \
+                  --location "$(location)" \
+                  --template-file infra/main.bicep \
+                  --parameters environmentName="$(environmentName)" location="$(location)" \
+                    storeAppExists=${exists[store]} inventoryAppExists=${exists[inventory]} productsAppExists=${exists[products]} \
+                  --output table
