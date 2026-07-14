@@ -5,8 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddHttpClient("Products", (httpClient) => httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ProductsApi")));
-builder.Services.AddHttpClient("Inventory", (httpClient) => httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>("InventoryApi")));
+builder.Services.AddHttpClient("Products", (httpClient) => httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ProductsApi") ?? throw new InvalidOperationException("Missing configuration value: ProductsApi")));
+builder.Services.AddHttpClient("Inventory", (httpClient) => httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>("InventoryApi") ?? throw new InvalidOperationException("Missing configuration value: InventoryApi")));
 builder.Services.AddScoped<IStoreBackendClient, StoreBackendClient>();
 builder.Services.AddMemoryCache();
 builder.Services.AddApplicationMonitoring();
@@ -28,8 +28,8 @@ app.Run();
 
 public class Product
 {
-    public string ProductId { get; set; }
-    public string ProductName { get; set; }
+    public string ProductId { get; set; } = string.Empty;
+    public string ProductName { get; set; } = string.Empty;
     public int Quantity { get; set; }
 }
 
