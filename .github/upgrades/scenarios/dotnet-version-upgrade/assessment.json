@@ -1,0 +1,762 @@
+{
+  "settings": {
+    "components": {
+      "code": true,
+      "binaries": false
+    },
+    "targetId": "net10.0",
+    "targetDisplayName": ".NETCoreApp,Version=v10.0"
+  },
+  "analysisStartTime": "2026-07-14T11:03:59.7169098Z",
+  "analysisEndTime": "2026-07-14T11:04:01.2180628Z",
+  "privacyModeHelpUrl": "https://go.microsoft.com/fwlink/?linkid=2270980",
+  "stats": {
+    "summary": {
+      "projects": 4,
+      "issues": 6,
+      "incidents": 20,
+      "effort": 20
+    },
+    "charts": {
+      "severity": {
+        "Mandatory": 9,
+        "Optional": 2,
+        "Potential": 9,
+        "Information": 0
+      },
+      "category": {
+        "NuGet": 5,
+        "Project": 4,
+        "Api": 11
+      }
+    }
+  },
+  "projects": [
+    {
+      "path": "Monitoring\\Monitoring.csproj",
+      "startingProject": true,
+      "issues": 2,
+      "storyPoints": 2,
+      "properties": {
+        "appName": "Monitoring",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net6.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 1,
+        "numberOfCodeFiles": 1,
+        "linesTotal": 36,
+        "linesOfCode": 36,
+        "totalApiScanned": 36,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "d8d8189a-8cb3-4a43-9c6d-54401f1a4ba1",
+          "ruleId": "NuGet.0005",
+          "projectPath": "Monitoring\\Monitoring.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.ApplicationInsights.AspNetCore, 2.20.0\n\nRecommendation:\n\nThis version is deprecated. Please use the most recent version.\nRemove Microsoft.ApplicationInsights.AspNetCore, and replace with new package Microsoft.ApplicationInsights.AspNetCore, 3.1.2",
+              "protected": "Microsoft.ApplicationInsights.AspNetCore, 2.20.0\n\nRecommendation:\n\nThis version is deprecated. Please use the most recent version.\nRemove Microsoft.ApplicationInsights.AspNetCore, and replace with new package Microsoft.ApplicationInsights.AspNetCore, 3.1.2"
+            },
+            "kind": "File",
+            "path": "Monitoring\\Monitoring.csproj",
+            "snippet": "Microsoft.ApplicationInsights.AspNetCore, 2.20.0\n\nRecommendation:\n\nThis version is deprecated. Please use the most recent version.\nRemove Microsoft.ApplicationInsights.AspNetCore, and replace with new package Microsoft.ApplicationInsights.AspNetCore, 3.1.2",
+            "protectedSnippet": "Microsoft.ApplicationInsights.AspNetCore, 2.20.0\n\nRecommendation:\n\nThis version is deprecated. Please use the most recent version.\nRemove Microsoft.ApplicationInsights.AspNetCore, and replace with new package Microsoft.ApplicationInsights.AspNetCore, 3.1.2",
+            "label": "Microsoft.ApplicationInsights.AspNetCore 2.20.0",
+            "properties": {
+              "PackageId": "Microsoft.ApplicationInsights.AspNetCore",
+              "PackageVersion": "2.20.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "b9c79476-6bad-486e-8b43-4eabb8104509",
+          "ruleId": "Project.0002",
+          "projectPath": "Monitoring\\Monitoring.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net6.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net6.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "Monitoring\\Monitoring.csproj",
+            "snippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net6.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "Store\\Store.csproj",
+      "startingProject": true,
+      "issues": 5,
+      "storyPoints": 14,
+      "properties": {
+        "appName": "Store",
+        "projectKind": "AspNetCore",
+        "frameworks": [
+          "net6.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 25,
+        "numberOfCodeFiles": 5,
+        "linesTotal": 2046,
+        "linesOfCode": 174,
+        "totalApiScanned": 165,
+        "minLinesOfCodeToChange": 11,
+        "maxLinesOfCodeToChange": 11
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "8f7e5f95-3a22-48a0-a6f0-d71578661f8d",
+          "ruleId": "NuGet.0001",
+          "projectPath": "Store\\Store.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets, 1.15.1\n\nRecommendation:\n\nNo supported version found",
+              "protected": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets, 1.15.1\n\nRecommendation:\n\nNo supported version found"
+            },
+            "kind": "File",
+            "path": "Store\\Store.csproj",
+            "snippet": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets, 1.15.1\n\nRecommendation:\n\nNo supported version found",
+            "protectedSnippet": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets, 1.15.1\n\nRecommendation:\n\nNo supported version found",
+            "label": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets 1.15.1",
+            "properties": {
+              "PackageId": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets",
+              "PackageVersion": "1.15.1",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "d7379530-4ae5-483f-a519-c784da11e3ba",
+          "ruleId": "NuGet.0004",
+          "projectPath": "Store\\Store.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Refit, 6.3.2\n\nRecommendation:\n\nRefit, 13.1.0",
+              "protected": "Refit, 6.3.2\n\nRecommendation:\n\nRefit, 13.1.0"
+            },
+            "kind": "File",
+            "path": "Store\\Store.csproj",
+            "snippet": "Refit, 6.3.2\n\nRecommendation:\n\nRefit, 13.1.0",
+            "protectedSnippet": "Refit, 6.3.2\n\nRecommendation:\n\nRefit, 13.1.0",
+            "label": "Refit 6.3.2",
+            "properties": {
+              "PackageId": "Refit",
+              "PackageVersion": "6.3.2",
+              "PackageNewVersion": "13.1.0",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "495ab523-604d-4947-bc93-54ff1bf01738",
+          "ruleId": "Project.0002",
+          "projectPath": "Store\\Store.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net6.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net6.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "Store\\Store.csproj",
+            "snippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net6.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        },
+        {
+          "incidentId": "b87b6daa-96cc-4620-aaec-e62765eb80cf",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: Exception diagnostics are suppressed when IExceptionHandler.TryHandleAsync returns true ",
+          "projectPath": "Store\\Store.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "app.UseExceptionHandler(\u0022/Error\u0022);",
+              "protected": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String)"
+            },
+            "kind": "File",
+            "path": "Store\\Program.cs",
+            "snippet": "app.UseExceptionHandler(\u0022/Error\u0022);",
+            "protectedSnippet": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String)",
+            "label": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String)",
+            "properties": {
+              "CharCount": "1953"
+            },
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/aspnet-core/10/exception-handler-diagnostics-suppressed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 18,
+            "column": 4
+          }
+        },
+        {
+          "incidentId": "e8006a6b-5bce-4b1a-8a64-fe243764d184",
+          "ruleId": "Api.0001",
+          "description": "Breaking change: DynamicallyAccessedMembers annotation removed from trim-unsafe configuration APIs ",
+          "projectPath": "Store\\Store.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddHttpClient(\u0022Inventory\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022InventoryApi\u0022)));",
+              "protected": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)"
+            },
+            "kind": "File",
+            "path": "Store\\Program.cs",
+            "snippet": "builder.Services.AddHttpClient(\u0022Inventory\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022InventoryApi\u0022)));",
+            "protectedSnippet": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "label": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "properties": {
+              "CharCount": "1953"
+            },
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/extensions/10.0/dynamically-accessed-members-configuration.md",
+                "isCustom": false
+              }
+            ],
+            "line": 8,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "79306629-3c13-4fab-9352-04a762694574",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Store\\Store.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddHttpClient(\u0022Inventory\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022InventoryApi\u0022)));",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "Store\\Program.cs",
+            "snippet": "builder.Services.AddHttpClient(\u0022Inventory\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022InventoryApi\u0022)));",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "properties": {
+              "CharCount": "1953"
+            },
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 8,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "a1a5bb6b-6f06-4329-b1e2-196bc2fb787c",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Store\\Store.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddHttpClient(\u0022Inventory\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022InventoryApi\u0022)));",
+              "protected": "M:System.Uri.#ctor(System.String)"
+            },
+            "kind": "File",
+            "path": "Store\\Program.cs",
+            "snippet": "builder.Services.AddHttpClient(\u0022Inventory\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022InventoryApi\u0022)));",
+            "protectedSnippet": "M:System.Uri.#ctor(System.String)",
+            "label": "M:System.Uri.#ctor(System.String)",
+            "properties": {
+              "CharCount": "1953"
+            },
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 8,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "d50223e4-39c4-492c-a191-4b384ea29a9e",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Store\\Store.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddHttpClient(\u0022Inventory\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022InventoryApi\u0022)));",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "Store\\Program.cs",
+            "snippet": "builder.Services.AddHttpClient(\u0022Inventory\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022InventoryApi\u0022)));",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "properties": {
+              "CharCount": "1953"
+            },
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 8,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "4f714acd-7243-4684-b274-97d4201b96d3",
+          "ruleId": "Api.0003",
+          "description": "URI query redaction in IHttpClientFactory logs ",
+          "projectPath": "Store\\Store.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddHttpClient(\u0022Inventory\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022InventoryApi\u0022)));",
+              "protected": "M:Microsoft.Extensions.DependencyInjection.HttpClientFactoryServiceCollectionExtensions.AddHttpClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Action{System.Net.Http.HttpClient})"
+            },
+            "kind": "File",
+            "path": "Store\\Program.cs",
+            "snippet": "builder.Services.AddHttpClient(\u0022Inventory\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022InventoryApi\u0022)));",
+            "protectedSnippet": "M:Microsoft.Extensions.DependencyInjection.HttpClientFactoryServiceCollectionExtensions.AddHttpClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Action{System.Net.Http.HttpClient})",
+            "label": "M:Microsoft.Extensions.DependencyInjection.HttpClientFactoryServiceCollectionExtensions.AddHttpClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Action{System.Net.Http.HttpClient})",
+            "properties": {
+              "CharCount": "1953"
+            },
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/9.0/query-redaction-logs.md",
+                "isCustom": false
+              }
+            ],
+            "line": 8,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "4be6050a-b1b0-4b89-a878-379ca5a4e1d8",
+          "ruleId": "Api.0001",
+          "description": "Breaking change: DynamicallyAccessedMembers annotation removed from trim-unsafe configuration APIs ",
+          "projectPath": "Store\\Store.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddHttpClient(\u0022Products\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022ProductsApi\u0022)));",
+              "protected": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)"
+            },
+            "kind": "File",
+            "path": "Store\\Program.cs",
+            "snippet": "builder.Services.AddHttpClient(\u0022Products\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022ProductsApi\u0022)));",
+            "protectedSnippet": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "label": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "properties": {
+              "CharCount": "1953"
+            },
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/extensions/10.0/dynamically-accessed-members-configuration.md",
+                "isCustom": false
+              }
+            ],
+            "line": 7,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "124dfbc6-2946-4172-b3dc-3d26b832e858",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Store\\Store.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddHttpClient(\u0022Products\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022ProductsApi\u0022)));",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "Store\\Program.cs",
+            "snippet": "builder.Services.AddHttpClient(\u0022Products\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022ProductsApi\u0022)));",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "properties": {
+              "CharCount": "1953"
+            },
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 7,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "0c9a1aa3-798a-43d1-956a-df1e3f2aa31c",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Store\\Store.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddHttpClient(\u0022Products\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022ProductsApi\u0022)));",
+              "protected": "M:System.Uri.#ctor(System.String)"
+            },
+            "kind": "File",
+            "path": "Store\\Program.cs",
+            "snippet": "builder.Services.AddHttpClient(\u0022Products\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022ProductsApi\u0022)));",
+            "protectedSnippet": "M:System.Uri.#ctor(System.String)",
+            "label": "M:System.Uri.#ctor(System.String)",
+            "properties": {
+              "CharCount": "1953"
+            },
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 7,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "23fabe31-1eb2-4254-989a-fb1ea038fb03",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "Store\\Store.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddHttpClient(\u0022Products\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022ProductsApi\u0022)));",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "Store\\Program.cs",
+            "snippet": "builder.Services.AddHttpClient(\u0022Products\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022ProductsApi\u0022)));",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "properties": {
+              "CharCount": "1953"
+            },
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 7,
+            "column": 0
+          }
+        },
+        {
+          "incidentId": "03ecfaa7-d691-4ec7-8f1e-7d584e6a62ae",
+          "ruleId": "Api.0003",
+          "description": "URI query redaction in IHttpClientFactory logs ",
+          "projectPath": "Store\\Store.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "builder.Services.AddHttpClient(\u0022Products\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022ProductsApi\u0022)));",
+              "protected": "M:Microsoft.Extensions.DependencyInjection.HttpClientFactoryServiceCollectionExtensions.AddHttpClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Action{System.Net.Http.HttpClient})"
+            },
+            "kind": "File",
+            "path": "Store\\Program.cs",
+            "snippet": "builder.Services.AddHttpClient(\u0022Products\u0022, (httpClient) =\u003E httpClient.BaseAddress = new Uri(builder.Configuration.GetValue\u003Cstring\u003E(\u0022ProductsApi\u0022)));",
+            "protectedSnippet": "M:Microsoft.Extensions.DependencyInjection.HttpClientFactoryServiceCollectionExtensions.AddHttpClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Action{System.Net.Http.HttpClient})",
+            "label": "M:Microsoft.Extensions.DependencyInjection.HttpClientFactoryServiceCollectionExtensions.AddHttpClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String,System.Action{System.Net.Http.HttpClient})",
+            "properties": {
+              "CharCount": "1953"
+            },
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/9.0/query-redaction-logs.md",
+                "isCustom": false
+              }
+            ],
+            "line": 7,
+            "column": 0
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "Store.InventoryApi\\Store.InventoryApi.csproj",
+      "startingProject": true,
+      "issues": 2,
+      "storyPoints": 2,
+      "properties": {
+        "appName": "Store.InventoryApi",
+        "projectKind": "AspNetCore",
+        "frameworks": [
+          "net6.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 3,
+        "numberOfCodeFiles": 1,
+        "linesTotal": 54,
+        "linesOfCode": 36,
+        "totalApiScanned": 65,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "e03a14e1-27d9-4193-a65e-527424683d60",
+          "ruleId": "NuGet.0001",
+          "projectPath": "Store.InventoryApi\\Store.InventoryApi.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets, 1.15.1\n\nRecommendation:\n\nNo supported version found",
+              "protected": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets, 1.15.1\n\nRecommendation:\n\nNo supported version found"
+            },
+            "kind": "File",
+            "path": "Store.InventoryApi\\Store.InventoryApi.csproj",
+            "snippet": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets, 1.15.1\n\nRecommendation:\n\nNo supported version found",
+            "protectedSnippet": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets, 1.15.1\n\nRecommendation:\n\nNo supported version found",
+            "label": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets 1.15.1",
+            "properties": {
+              "PackageId": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets",
+              "PackageVersion": "1.15.1",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "53afd103-df33-4565-82a5-c9521f761086",
+          "ruleId": "Project.0002",
+          "projectPath": "Store.InventoryApi\\Store.InventoryApi.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net6.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net6.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "Store.InventoryApi\\Store.InventoryApi.csproj",
+            "snippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net6.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "Store.ProductApi\\Store.ProductApi.csproj",
+      "startingProject": true,
+      "issues": 2,
+      "storyPoints": 2,
+      "properties": {
+        "appName": "Store.ProductApi",
+        "projectKind": "AspNetCore",
+        "frameworks": [
+          "net6.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 3,
+        "numberOfCodeFiles": 1,
+        "linesTotal": 52,
+        "linesOfCode": 34,
+        "totalApiScanned": 78,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "4262efd6-d091-4778-8e40-2ac38a7c9d4c",
+          "ruleId": "NuGet.0001",
+          "projectPath": "Store.ProductApi\\Store.ProductApi.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets, 1.15.1\n\nRecommendation:\n\nNo supported version found",
+              "protected": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets, 1.15.1\n\nRecommendation:\n\nNo supported version found"
+            },
+            "kind": "File",
+            "path": "Store.ProductApi\\Store.ProductApi.csproj",
+            "snippet": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets, 1.15.1\n\nRecommendation:\n\nNo supported version found",
+            "protectedSnippet": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets, 1.15.1\n\nRecommendation:\n\nNo supported version found",
+            "label": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets 1.15.1",
+            "properties": {
+              "PackageId": "Microsoft.VisualStudio.Azure.Containers.Tools.Targets",
+              "PackageVersion": "1.15.1",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "a1889f53-3ec2-4f57-8609-2b8a1f0afae1",
+          "ruleId": "Project.0002",
+          "projectPath": "Store.ProductApi\\Store.ProductApi.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net6.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net6.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "Store.ProductApi\\Store.ProductApi.csproj",
+            "snippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net6.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net6.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        }
+      ],
+      "features": []
+    }
+  ],
+  "rules": {
+    "NuGet.0005": {
+      "id": "NuGet.0005",
+      "isFeature": false,
+      "description": "NuGet package is deprecated.\n\nGo to its documentation and if there is a guidance for replacement of functionality provided by this package.",
+      "label": "NuGet package is deprecated",
+      "severity": "Optional",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262531",
+          "isCustom": false
+        }
+      ]
+    },
+    "Project.0002": {
+      "id": "Project.0002",
+      "isFeature": false,
+      "description": "Project\u0027s target framework(s) needs to be changed to the new target framework that you selected for this upgrade.\n\nDuring upgrade target framework will be adjusted to corresponding platform when applicable. In some cases project would result in multiple target frameworks after the upgrade if it was using features that now have their own platforms in modern .NET frameworks (windows, iOS, Android etc).",
+      "label": "Project\u0027s target framework(s) needs to be changed",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Overview of porting from .NET Framework to .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265227",
+          "isCustom": false
+        },
+        {
+          "title": ".NET project SDKs",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265226",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0001": {
+      "id": "NuGet.0001",
+      "isFeature": false,
+      "description": "NuGet package is incompatible with selected target framework.\n\nPackage needs to be upgraded to a version supporting selected project target framework. If there no new package versions supporting new target framework, different package needs to be used and all code needs to be upgraded to new API.",
+      "label": "NuGet package is incompatible",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262529",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0004": {
+      "id": "NuGet.0004",
+      "isFeature": false,
+      "description": "NuGet package contains security vulnerabilities.\n\nPackage needs to be upgraded to a newer version that addresses known security vulnerabilities.",
+      "label": "NuGet package contains security vulnerability",
+      "severity": "Optional",
+      "effort": 1
+    },
+    "Api.0003": {
+      "id": "Api.0003",
+      "isFeature": false,
+      "description": "API has a behavioral change in selected .NET version: code and binaries may behave differently at runtime without needing recompilation, but the new behavior might be undesirable and require updates.",
+      "label": "Behavioral change in selected .NET version",
+      "severity": "Potential",
+      "effort": 1
+    },
+    "Api.0001": {
+      "id": "Api.0001",
+      "isFeature": false,
+      "description": "API is binary incompatible for selected .NET version: affects existing binaries, often requiring recompilation, because the API has changed in a way that prevents older binaries from loading or executing.",
+      "label": "Binary incompatible for selected .NET version",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Breaking changes in .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262679",
+          "isCustom": false
+        }
+      ]
+    }
+  }
+}
