@@ -32,7 +32,7 @@ pr:
 
 variables:
   azureServiceConnection: 'ms-bb'
-  environmentName: 'ms-bb'
+  environmentName: 'rg-bb'
   location: 'francecentral'
   vmImage: 'ubuntu-latest'
 
