@@ -21,6 +21,16 @@ main {
     align-items: center;
 }
 
+.version-badge {
+    background-color: #052767;
+    color: #fff;
+    border-radius: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    font-family: Consolas, Menlo, monospace;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
     .top-row ::deep a, .top-row .btn-link {
         white-space: nowrap;
         margin-left: 1.5rem;

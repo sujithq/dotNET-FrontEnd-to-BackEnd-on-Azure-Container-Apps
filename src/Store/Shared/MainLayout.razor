@@ -1,10 +1,12 @@
 ﻿@inherits LayoutComponentBase
+@using System.Reflection
 
 <PageTitle>Store</PageTitle>
 
 <div class="page">
     <main>
         <div class="top-row px-4">
+            <span class="version-badge" title="Version / Azure Container Apps revision serving this session">@_version</span>
             <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
         </div>
 
@@ -13,3 +15,12 @@
         </article>
     </main>
 </div>
+
+@code {
+    // On Azure Container Apps, CONTAINER_APP_REVISION is injected automatically
+    // (e.g. store--b1234), which makes blue/green traffic splitting visible in the UI.
+    private readonly string _version =
+        Environment.GetEnvironmentVariable("CONTAINER_APP_REVISION")
+        ?? typeof(MainLayout).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+        ?? "local";
+}
