@@ -1,5 +1,12 @@
 # Azure DevOps pipeline: build, test, push images to ACR, deploy to Azure Container Apps.
 #
+# Deployment strategy:
+#   - inventory / products APIs : direct update (single-revision mode)
+#   - store front-end           : revision-based blue/green. A new "green" revision
+#     is created with 0% traffic, then traffic is shifted 90/10 -> 50/50 -> 0/100
+#     through manual approval gates. Rejecting any gate rolls all traffic back to
+#     the previous ("blue") revision instantly.
+#
 # Before the first run, set these in the pipeline (or replace the placeholder values below):
 #   - azureServiceConnection : name of an Azure Resource Manager service connection
 #                              with access to the resource group and ACR
@@ -95,8 +102,8 @@ stages:
                 docker push "$image:$(tag)"
                 docker push "$image:latest"
 
-  - stage: Deploy
-    displayName: Deploy to Azure Container Apps
+  - stage: DeployApis
+    displayName: Deploy APIs (inventory, products)
     dependsOn: PublishImages
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
     jobs:
@@ -106,8 +113,6 @@ stages:
           vmImage: $(vmImage)
         strategy:
           matrix:
-            store:
-              serviceName: 'store'
             inventory:
               serviceName: 'inventory'
             products:
@@ -142,3 +147,234 @@ stages:
 
                 fqdn=$(az containerapp show --name "$appName" --resource-group "$(resourceGroupName)" --query properties.configuration.ingress.fqdn --output tsv)
                 echo "Deployed $(serviceName): https://$fqdn"
+
+  # ---------------------------------------------------------------------------
+  # Store front-end: revision-based blue/green deployment
+  # ---------------------------------------------------------------------------
+  - stage: DeployStoreGreen
+    displayName: 'Store: deploy green revision (0%)'
+    dependsOn: PublishImages
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    jobs:
+      - job: DeployGreen
+        displayName: Pin blue, create green at 0%
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - task: AzureCLI@2
+            name: plan
+            displayName: Create green revision with 0% traffic
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -euo pipefail
+                az extension add --name containerapp --upgrade --only-show-errors
+
+                appName=$(az containerapp list \
+                  --resource-group "$(resourceGroupName)" \
+                  --query "[?tags.\"azd-service-name\"=='store'].name | [0]" \
+                  --output tsv)
+
+                if [ -z "$appName" ]; then
+                  echo "##vso[task.logissue type=error]No container app tagged azd-service-name=store found in $(resourceGroupName)."
+                  exit 1
+                fi
+
+                # Blue/green requires multiple-revision mode (idempotent).
+                az containerapp revision set-mode \
+                  --name "$appName" --resource-group "$(resourceGroupName)" \
+                  --mode multiple --output none
+
+                # Blue = the revision currently serving the most traffic. Fall back to
+                # the latest ready revision right after switching from single mode.
+                blueRevision=$(az containerapp ingress traffic show \
+                  --name "$appName" --resource-group "$(resourceGroupName)" \
+                  --query 'sort_by([?revisionName], &weight)[-1].revisionName' --output tsv)
+                if [ -z "$blueRevision" ]; then
+                  blueRevision=$(az containerapp show \
+                    --name "$appName" --resource-group "$(resourceGroupName)" \
+                    --query properties.latestReadyRevisionName --output tsv)
+                fi
+
+                # Pin 100% of traffic to blue so the new revision starts at 0%.
+                az containerapp ingress traffic set \
+                  --name "$appName" --resource-group "$(resourceGroupName)" \
+                  --revision-weight "$blueRevision=100" --output none
+
+                # Green = new revision with a deterministic suffix, created at 0%.
+                az containerapp update \
+                  --name "$appName" --resource-group "$(resourceGroupName)" \
+                  --image "$(acrName).azurecr.io/store:$(tag)" \
+                  --revision-suffix "b$(Build.BuildId)" --output none
+                greenRevision="${appName}--b$(Build.BuildId)"
+
+                greenFqdn=$(az containerapp revision show \
+                  --name "$appName" --resource-group "$(resourceGroupName)" \
+                  --revision "$greenRevision" --query properties.fqdn --output tsv)
+                appFqdn=$(az containerapp show \
+                  --name "$appName" --resource-group "$(resourceGroupName)" \
+                  --query properties.configuration.ingress.fqdn --output tsv)
+
+                echo "Blue  (100%): $blueRevision"
+                echo "Green (  0%): $greenRevision"
+                echo "Preview green: https://$greenFqdn"
+                echo "App URL      : https://$appFqdn"
+
+                echo "##vso[task.setvariable variable=appName;isOutput=true]$appName"
+                echo "##vso[task.setvariable variable=blueRevision;isOutput=true]$blueRevision"
+                echo "##vso[task.setvariable variable=greenRevision;isOutput=true]$greenRevision"
+
+  - stage: CanaryStore
+    displayName: 'Store: canary 90/10'
+    dependsOn: DeployStoreGreen
+    jobs:
+      - job: Approve
+        displayName: Approve 10% canary
+        pool: server
+        timeoutInMinutes: '1440'
+        steps:
+          - task: ManualValidation@0
+            timeoutInMinutes: 1440
+            inputs:
+              instructions: 'Green revision is deployed with 0% traffic (preview URL in the DeployStoreGreen logs). Resume to route 10% of traffic to green (90/10). Reject to roll back.'
+              onTimeout: reject
+      - job: Shift
+        displayName: blue 90 / green 10
+        dependsOn: Approve
+        pool:
+          vmImage: $(vmImage)
+        variables:
+          appName: $[ stageDependencies.DeployStoreGreen.DeployGreen.outputs['plan.appName'] ]
+          blueRevision: $[ stageDependencies.DeployStoreGreen.DeployGreen.outputs['plan.blueRevision'] ]
+          greenRevision: $[ stageDependencies.DeployStoreGreen.DeployGreen.outputs['plan.greenRevision'] ]
+        steps:
+          - task: AzureCLI@2
+            displayName: Set traffic 90/10
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -euo pipefail
+                az extension add --name containerapp --upgrade --only-show-errors
+                az containerapp ingress traffic set \
+                  --name "$(appName)" --resource-group "$(resourceGroupName)" \
+                  --revision-weight "$(blueRevision)=90" "$(greenRevision)=10" --output table
+
+  - stage: ShiftStore
+    displayName: 'Store: shift 50/50'
+    dependsOn: [ CanaryStore, DeployStoreGreen ]
+    jobs:
+      - job: Approve
+        displayName: Approve 50/50 split
+        pool: server
+        timeoutInMinutes: '1440'
+        steps:
+          - task: ManualValidation@0
+            timeoutInMinutes: 1440
+            inputs:
+              instructions: 'Green is serving 10% of traffic. Resume to shift to 50/50. Reject to roll back.'
+              onTimeout: reject
+      - job: Shift
+        displayName: blue 50 / green 50
+        dependsOn: Approve
+        pool:
+          vmImage: $(vmImage)
+        variables:
+          appName: $[ stageDependencies.DeployStoreGreen.DeployGreen.outputs['plan.appName'] ]
+          blueRevision: $[ stageDependencies.DeployStoreGreen.DeployGreen.outputs['plan.blueRevision'] ]
+          greenRevision: $[ stageDependencies.DeployStoreGreen.DeployGreen.outputs['plan.greenRevision'] ]
+        steps:
+          - task: AzureCLI@2
+            displayName: Set traffic 50/50
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -euo pipefail
+                az extension add --name containerapp --upgrade --only-show-errors
+                az containerapp ingress traffic set \
+                  --name "$(appName)" --resource-group "$(resourceGroupName)" \
+                  --revision-weight "$(blueRevision)=50" "$(greenRevision)=50" --output table
+
+  - stage: PromoteStore
+    displayName: 'Store: promote green (100%)'
+    dependsOn: [ ShiftStore, DeployStoreGreen ]
+    jobs:
+      - job: Approve
+        displayName: Approve full cut-over
+        pool: server
+        timeoutInMinutes: '1440'
+        steps:
+          - task: ManualValidation@0
+            timeoutInMinutes: 1440
+            inputs:
+              instructions: 'Green is serving 50% of traffic. Resume to send 100% to green. Reject to roll back instantly to blue.'
+              onTimeout: reject
+      - job: Promote
+        displayName: blue 0 / green 100
+        dependsOn: Approve
+        pool:
+          vmImage: $(vmImage)
+        variables:
+          appName: $[ stageDependencies.DeployStoreGreen.DeployGreen.outputs['plan.appName'] ]
+          blueRevision: $[ stageDependencies.DeployStoreGreen.DeployGreen.outputs['plan.blueRevision'] ]
+          greenRevision: $[ stageDependencies.DeployStoreGreen.DeployGreen.outputs['plan.greenRevision'] ]
+        steps:
+          - task: AzureCLI@2
+            displayName: Set traffic 0/100
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -euo pipefail
+                az extension add --name containerapp --upgrade --only-show-errors
+                # Blue stays active (at 0%) so a post-promotion rollback is still instant.
+                # Deactivate it later with: az containerapp revision deactivate
+                az containerapp ingress traffic set \
+                  --name "$(appName)" --resource-group "$(resourceGroupName)" \
+                  --revision-weight "$(blueRevision)=0" "$(greenRevision)=100" --output table
+
+  - stage: RollbackStore
+    displayName: 'Store: rollback to blue'
+    dependsOn: [ DeployStoreGreen, CanaryStore, ShiftStore, PromoteStore ]
+    condition: |
+      and(
+        ne(variables['Build.Reason'], 'PullRequest'),
+        eq(dependencies.DeployStoreGreen.result, 'Succeeded'),
+        or(
+          eq(dependencies.CanaryStore.result, 'Failed'),
+          eq(dependencies.ShiftStore.result, 'Failed'),
+          eq(dependencies.PromoteStore.result, 'Failed')
+        )
+      )
+    jobs:
+      - job: Rollback
+        displayName: blue 100 / green 0
+        pool:
+          vmImage: $(vmImage)
+        variables:
+          appName: $[ stageDependencies.DeployStoreGreen.DeployGreen.outputs['plan.appName'] ]
+          blueRevision: $[ stageDependencies.DeployStoreGreen.DeployGreen.outputs['plan.blueRevision'] ]
+          greenRevision: $[ stageDependencies.DeployStoreGreen.DeployGreen.outputs['plan.greenRevision'] ]
+        steps:
+          - task: AzureCLI@2
+            displayName: Restore 100% traffic to blue
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -euo pipefail
+                az extension add --name containerapp --upgrade --only-show-errors
+                az containerapp ingress traffic set \
+                  --name "$(appName)" --resource-group "$(resourceGroupName)" \
+                  --revision-weight "$(blueRevision)=100" "$(greenRevision)=0" --output table
+                az containerapp revision deactivate \
+                  --name "$(appName)" --resource-group "$(resourceGroupName)" \
+                  --revision "$(greenRevision)"
+                echo "Rolled back: 100% of traffic restored to $(blueRevision); $(greenRevision) deactivated."

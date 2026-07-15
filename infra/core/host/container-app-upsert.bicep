@@ -51,6 +51,10 @@ param identityName string = ''
 @description('The name of the container image')
 param imageName string = ''
 
+@description('The active revisions mode for the container app')
+@allowed([ 'Single', 'Multiple' ])
+param revisionMode string = 'Single'
+
 @description('The secrets required for the container')
 param secrets array = []
 
@@ -89,6 +93,7 @@ module app 'container-app.bicep' = {
     daprEnabled: daprEnabled
     daprAppId: daprAppId
     daprAppProtocol: daprAppProtocol
+    revisionMode: revisionMode
     secrets: secrets
     external: external
     env: env

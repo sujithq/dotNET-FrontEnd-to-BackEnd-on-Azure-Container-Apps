@@ -10,6 +10,10 @@ param serviceName string = 'store'
 param inventoryServiceName string = 'inventory'
 param productsServiceName string = 'products'
 
+@description('Multiple revision mode enables blue/green deployments with traffic splitting')
+@allowed([ 'Single', 'Multiple' ])
+param revisionMode string = 'Multiple'
+
 resource identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: identityName
   location: location
@@ -28,6 +32,7 @@ module app '../core/host/container-app-upsert.bicep' = {
     containerRegistryName: containerRegistryName
     containerMaxReplicas: 1
     containerMinReplicas: 1
+    revisionMode: revisionMode
     env: [
       {
         name: 'ASPNETCORE_ENVIRONMENT'

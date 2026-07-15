@@ -107,6 +107,28 @@ After a few minutes, all three steps in the workflow will be completed, and each
 
 With the projects deployed to Azure, you can now test the app to make sure it works. 
 
+## Blue/green deployments with Azure DevOps
+
+[azure-pipelines.yml](azure-pipelines.yml) deploys the `store` front-end using [Azure Container Apps revisions](https://learn.microsoft.com/azure/container-apps/revisions) and traffic splitting. The `store` app runs in **multiple-revision mode** (set in [infra/app/store.bicep](infra/app/store.bicep)); the `inventory` and `products` APIs keep the simpler single-revision direct update.
+
+Pipeline flow for the store after build/test/push:
+
+1. **DeployStoreGreen** – pins 100% of traffic to the current revision (*blue*), then creates a new revision (*green*, suffixed with the build id) that starts with **0%** traffic. The log prints a revision-specific preview URL for green.
+2. **CanaryStore** – manual approval gate, then shifts traffic to **90/10** (blue/green).
+3. **ShiftStore** – manual approval gate, then shifts to **50/50**.
+4. **PromoteStore** – manual approval gate, then sends **100%** to green (blue stays active at 0% for instant rollback).
+5. **RollbackStore** – runs automatically when any gate is rejected (or a shift fails): traffic snaps back to **100% blue** and the green revision is deactivated.
+
+### Demo script
+
+1. Commit a visible UI change (e.g. a button colour in `src/Store`) to `main`.
+2. Watch the pipeline build, push, and create the green revision at 0%.
+3. In the Azure portal (Container App → *Revisions and replicas*), show both revisions and the traffic weights; open the green preview URL from the pipeline log.
+4. Approve the gates one at a time and refresh the app URL to see traffic split 90/10, then 50/50.
+5. To demo instant rollback, **reject** a gate – the rollback stage restores 100% traffic to the old revision within seconds.
+
+> Note: re-running the infrastructure pipeline redeploys the container app template, which can reset traffic weights to the latest revision. Finish or roll back an in-flight blue/green run before re-provisioning.
+
 ## Try the app in Azure
 
 The `deploy` CI/CD process creates a series of resources in your Azure subscription. These are used primarily for hosting the project code, but there's also a few additional resources that aid with monitoring and observing how the app is running in the deployed environment. 
